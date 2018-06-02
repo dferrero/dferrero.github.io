@@ -14,6 +14,7 @@ You should not set +x to all users... ;)
 
 I am David, an IT guy focused on security since 2012. I have been working focusing on **Blue Team** with SIEMs, IDS/IPS, vulnerability scanners and analyzing malware. I have also worked as **Red Team** performing penetration tests.
 
+I don't pretend to be a professional mobile developer (mostly iOS), but I like to spend some time learning how to create apps and how they work. If some day I finally finish an app, it will appear on `Projects` section.
 
 Some of my hobbies are listen and play music (I know how to play over six instruments, although I usually do it only three), reading, motorbikes and writing. And that's the reason why I have opened this site.
 
