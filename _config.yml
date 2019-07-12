@@ -19,6 +19,7 @@ github_username:  dferrero
 markdown: kramdown
 kramdown:
   input: GFM
+permalink: /:categories/:title/
 
 # Third-party services
 # just leave someone empty to disable it
