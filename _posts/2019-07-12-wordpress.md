@@ -17,6 +17,7 @@ Here is the index with all points:
 - [Let's Encrypt setup](#lets-encrypt-setup)
 - [Enabling HTTPS in Wordpress](#enabling-https-in-wordpress)
 - [Hardening Wordpress](#hardening-wordpress)
+- [Multisite multidomain Wordpress](#multisite-multidomain-wordpress)
 - [References](#references)
 
 ## Secure installation
@@ -27,25 +28,27 @@ Main problem here is PHP version hosted in repositories. Usually, the standard i
 
 Here is a summary of all steps for a fresh installation, including PHP 7.3.
 
-### Core packages
+#### Core packages
 ```
 apt-get update
 apt-get install apache2 mysql-server
 
+# Remove apache2 info file
+rm -f /var/www/html/index.html
 # Minimal secure performance related to SQL
 mysql_secure_installation
 ``` 
 
-### PHP 7.3
+#### PHP 7.3
 
 If we perform a search like `apt-cache search php7.3`, probably we will get no results. In this case, we have to add a new repository to our sources list:
 
+```echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" > /etc/apt/sources.list.d/10-buster.list```
+
+Create a file with the next content:
 ```
-echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" > /etc/apt/sources.list.d/10-buster.list
-vi /etc/apt/preferences.d/10-buster
-	
------------
-# File content
+vi /etc/apt/preferences.d/10-buster	
+#-----------
 Package: *
 Pin: release n=stretch
 Pin-Priority: 900
@@ -53,15 +56,37 @@ Pin-Priority: 900
 Package: *
 Pin: release n=buster
 Pin-Priority: 750
------------
-	
+#-----------
+```
+
+Now install the last version of PHP hosted in the added repository:
+```
 apt-get update
 apt install -y -t buster php7.3-fpm php7.3-curl php7.3-gd php7.3-intl php7.3-mbstring php7.3-mysql php7.3-imap php7.3-opcache php7.3-sqlite3 php7.3-xml php7.3-xmlrpc php7.3-zip php7.3-bcmath php-apcu libapache2-mod-php7.3
 ```
 
+#### Wordpress
+
+Download with `wget` or `curl` the last version of Wordpress:
+```
+cd /tmp
+wget https://wordpress.org/latest.tar.gz
+tar -xzvf latest.tar.gz
+mv wordpress/ /var/www/html
+```
+
+Now you can open a browser, navigate to "http://<your_ip_address>/wordpress" and perform the final installation with Wordpress' wizard.
+
+## Let's Encrypt setup
+
+In order to enable HTTPS into Wordpress, one of the requirements is to have installed a certification signed by a trusted Certification Authority (CA). If we are not a big company, the best and cheapest option is use one of 
+
+
+
 ## Virtual hosts configuration
 
 Apache - Virtualhost
+```
 	cd /etc/apache2/sites-available
 	vi sitename.conf
 	-----------
@@ -79,16 +104,18 @@ Apache - Virtualhost
 	-----------
 	a2ensite sitename.conf
 	/etc/init.d/apache2 restart
+```
 
 MySQL
+```
 	CREATE DATABASE databasename;
 	CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'user_password';
 	GRANT ALL PRIVILEGES ON databasename.* TO "wordpressusername"@'localhost' IDENTIFIED BY "password";
 	FLUSH PRIVILEGES;
+```
 
-Wordpress
-	wget https://wordpress.org/latest.tar.gz
-	tar -xzvf latest.tar.gz
+## Hardening
+WIP
 
-### References
+## References
 - PHP custom source
